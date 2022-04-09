@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2020, Julen Larrucea <code@larrucea.eu>
@@ -62,7 +62,7 @@ if (not os.environ.get('PYTHONHTTPSVERIFY', '') and
 
 
 try:
-    from lib_presets import get_presets
+    from icinga_passive_presets import get_presets
     presets_loaded = True
 except Exception as e:
     print("WARNING: Unable to load presets")

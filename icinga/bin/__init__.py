@@ -7,7 +7,7 @@
 # under the terms of the GPLv2, the GNU General Public License version 2, as
 # published by the Free Software Foundation. http://gnu.org/licenses/gpl.html
 
-from lib_presets import get_presets
-from icinga_passive import main
+from icinga_passive_presets import get_presets
+from icigna import main
 
 __version__ = '1.0.0'
