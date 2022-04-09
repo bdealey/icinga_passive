@@ -216,7 +216,8 @@ def build_data(hostname, service, command, uom='', warn='', crit=''):
         # For arbitrary commands we assume an int or float as output
         try:
             fldig = float(res['stdout'])
-            if int(fldig) / fldig == 1:
+            #if fldig and int(fldig) / fldig == 1:
+            if fldig.is_integer():
                 stdout = int(fldig)
             else:
                 stdout = fldig
@@ -231,13 +232,13 @@ def build_data(hostname, service, command, uom='', warn='', crit=''):
 
         ## IF we have both critical and warning, and criticial is > warn, then we alert when numbers exceed these values
         #print("WPD: Type crit: ", type(crit), crit)
-        if crit and warn and crit <= warn:
-            if  stdout < crit:
+        if not isinstance(crit, str) and isinstance(warn, str) and crit <= warn:
+            if  stdout <= crit:
                 msg = '[CRITICAL] The value of "' + service + '" is too low | '
                 msg += sservice + '=' + str(stdout) + str(uom)
                 data['exit_status'] = 2
                 data['plugin_output'] = msg
-            elif stdout < warn:
+            elif stdout <= warn:
                 msg = '[WARNING] The value of "' + service + '" is too low | '
                 msg += sservice + '=' + str(stdout) + str(uom)
                 data['exit_status'] = 1
