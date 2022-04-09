@@ -231,7 +231,7 @@ def build_data(hostname, service, command, uom='', warn='', crit=''):
 
         ## IF we have both critical and warning, and criticial is > warn, then we alert when numbers exceed these values
         #print("WPD: Type crit: ", type(crit), crit)
-        if crit and warn and crit < warn:
+        if crit and warn and crit <= warn:
             if  stdout < crit:
                 msg = '[CRITICAL] The value of "' + service + '" is too low | '
                 msg += sservice + '=' + str(stdout) + str(uom)
@@ -259,7 +259,7 @@ def build_data(hostname, service, command, uom='', warn='', crit=''):
                 data['exit_status'] = 0
                 data['plugin_output'] = msg
                 msg = "'" + sservice + "'=" + str(stdout) + uom
-                msg += ';' + warn + ';' + crit +';;'
+                msg += ';' + str(warn) + ';' + str(crit) +';;'
                 data['performance_data'] = msg 
 
     return data

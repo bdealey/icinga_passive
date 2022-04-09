@@ -37,7 +37,11 @@ pre['total_mem']['UOM'] = "B"
 
 pre['num_procs_python'] = {}
 pre['num_procs_python']['Description'] = 'Number of processes'
-pre['num_procs_python']['Command'] = """ps -efww | grep python | wc -l"""
+pre['num_procs_python']['Command'] = """ps -efww | grep python | grep -v grep | wc -l"""
+
+pre['num_procs_hzcollector'] = {}
+pre['num_procs_hzcollector']['Description'] = 'Number of processes'
+pre['num_procs_hzcollector']['Command'] = """ps -efww | grep hzcollector | grep -v grep | wc -l"""
 
 pre['lm_cpu_temp'] = {}
 pre['lm_cpu_temp']['Description'] = 'CPU temperature in Celsius from lm-sensors'
