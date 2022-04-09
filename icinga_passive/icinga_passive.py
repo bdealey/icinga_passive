@@ -143,11 +143,11 @@ def run_cmd(cmd, verbose=False):
     except subprocess.CalledProcessError as e:
         result['rc'] = e.returncode
         output = e.output.decode('utf-8')
-        result['stdout'] = output.strip()
-        print('ERROR: The command exited with status ' + str(result['rc']) +
-              'and erro message:')
-        print(output)
-        sys.exit(1)
+        result['stdout'] = out.strip()
+        #WPD result['stdout'] = output.strip()
+        #WPD print('ERROR: The command exited with status ' + str(result['rc']) + 'and erro message:')
+        #WPD print(output)
+        #WPD sys.exit(1)
 
     return result
 # cmd = 'ls -l'
@@ -160,6 +160,7 @@ def run_cmd(cmd, verbose=False):
 # hostname and service_name must be configured already in Icinga2
 # the command is an arbitrary command to execture in the current system
 # warn and crit is warning and critical threshold
+#WPD def build_data(hostname, service, command, uom='', warn='', crit=''):
 def build_data(hostname, service, command, uom='', warn='', crit=''):
     data = {}
     sservice = service.replace(' ', '_')
@@ -167,6 +168,23 @@ def build_data(hostname, service, command, uom='', warn='', crit=''):
     data['filter'] = 'host.name=="' + hostname + '" && service.name=="'
     data['filter'] += service + '"'
     data['check_source'] = hostname
+
+
+    # WPD Warn and Crit should be ints or floats, not a string
+    if crit:
+        try:
+            int_crit = int(crit)
+            crit = int_crit
+        except:
+            pass
+
+    # If no command given, we are probably testing the setup
+    if warn:
+        try:
+            int_warn = int(warn)
+            warn = int_warn
+        except:
+            pass
 
     # If no command given, we are probably testing the setup
     if not command:
@@ -179,7 +197,8 @@ def build_data(hostname, service, command, uom='', warn='', crit=''):
     # If the command name starts with "check_" assume we are using some icinga
     # icinga plugin, so the stdout is probably alredy properly formatted and 
     # ready to be sent
-    if os.path.basename(command).startswith('check_'):
+    #WPD if os.path.basename(command).startswith('check_'):
+    if 'check_' in os.path.basename(command):
         data['exit_status'] = res['rc']
         stdout = res['stdout']
         data['plugin_output'] = stdout.split('|')[0]
@@ -200,6 +219,7 @@ def build_data(hostname, service, command, uom='', warn='', crit=''):
                 stdout = int(fldig)
             else:
                 stdout = fldig
+            #print("WPD: Type stdout: ", type(stdout))
         except ValueError as e:
             msg = 'UNKNOWN: Unable to convert "' + str(res['stdout'][0])
             msg += '" to a number'
@@ -207,6 +227,7 @@ def build_data(hostname, service, command, uom='', warn='', crit=''):
             data['plugin_output'] = msg
             return data
 
+        print("WPD: Type crit: ", type(crit), crit)
         if crit and stdout > crit:
             msg = '[CRITICAL] The value of "' + service + '" is too high | '
             msg += sservice + '=' + str(stdout) + str(uom)
@@ -267,10 +288,14 @@ def api_req(api_path, data=None, verbose=False):
         if data:
             print('Data: ', r.data)
 
-    result = urlopen(r)
-    res = result.read()
-    if type(res) == bytes:
-        res = res.decode('utf-8')
+    try:
+        result = urlopen(r)
+        res = result.read()
+        if type(res) == bytes:
+            res = res.decode('utf-8')
+    except BaseException as e:
+        print('ERROR: Received error from icinga2 server. Has check been defined?\n')
+        sys.exit(2)
 
     if verbose:
         print('Result received')

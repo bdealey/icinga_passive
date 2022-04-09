@@ -10,6 +10,16 @@ Optionally, it can contain a UOM (Unit Of Measurement), described here:
 
 pre = {}
 
+pre['disk_space_root'] = {}
+pre['disk_space_root']['Description'] = 'The the amount of used bytes on the main/root partition'
+pre['disk_space_root']['Command'] = "df |grep '/$' | awk '{print $3}'"
+pre['disk_space_root']['UOM'] = "B"
+
+pre['disk_space_opt'] = {}
+pre['disk_space_opt']['Description'] = 'The the amount of used bytes on the main/root partition'
+pre['disk_space_opt']['Command'] = "df /opt/hopzero | grep -v Used |awk '{print $3}'"
+pre['disk_space_opt']['UOM'] = "B"
+
 pre['root_disk'] = {}
 pre['root_disk']['Description'] = 'The the amount of used bytes on the main/root partition'
 pre['root_disk']['Command'] = "df |grep '/$' | awk '{print $3}'"
@@ -24,6 +34,10 @@ pre['total_mem'] = {}
 pre['total_mem']['Description'] = 'Total memory RAM in "active" state'
 pre['total_mem']['Command'] = """awk '/MemTotal/ {total=$2} /MemFree/ {free=$2} /Buffers/ {buffers=$2} $1 ~ /^Cache/ {cached=$2} /SReclaimable/ {reclaim=$2} /Shmem:/ {shmem=$2} END {printf "%.0f\\n", ((total - free) - (buffers + cached)) / 1024}' /proc/meminfo"""
 pre['total_mem']['UOM'] = "B"
+
+pre['num_procs_python'] = {}
+pre['num_procs_python']['Description'] = 'Number of processes'
+pre['num_procs_python']['Command'] = """ps -efww | grep python | wc -l"""
 
 pre['lm_cpu_temp'] = {}
 pre['lm_cpu_temp']['Description'] = 'CPU temperature in Celsius from lm-sensors'
