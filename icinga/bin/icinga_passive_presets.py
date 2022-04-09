@@ -20,6 +20,11 @@ pre['disk_space_opt']['Description'] = 'The the amount of used bytes on the main
 pre['disk_space_opt']['Command'] = "df /opt/hopzero | grep -v Used |awk '{print $3}'"
 pre['disk_space_opt']['UOM'] = "B"
 
+pre['disk_space_opt_pct_used'] = {}
+pre['disk_space_opt_pct_used']['Description'] = 'The the amount of used bytes on the main/root partition'
+pre['disk_space_opt_pct_used']['Command'] = "df /opt/hopzero | grep -v Used |awk '{print $5}' | sed 's/%//'"
+pre['disk_space_opt_pct_used']['UOM'] = "%"
+
 pre['total_cpu'] = {}
 pre['total_cpu']['Description'] = 'Total percentage of CPU capacity used'
 pre['total_cpu']['Command'] = "grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage }'"
@@ -30,16 +35,26 @@ pre['total_mem']['Description'] = 'Total memory RAM in "active" state'
 pre['total_mem']['Command'] = """awk '/MemTotal/ {total=$2} /MemFree/ {free=$2} /Buffers/ {buffers=$2} $1 ~ /^Cache/ {cached=$2} /SReclaimable/ {reclaim=$2} /Shmem:/ {shmem=$2} END {printf "%.0f\\n", ((total - free) - (buffers + cached)) / 1024}' /proc/meminfo"""
 pre['total_mem']['UOM'] = "B"
 
+
+pre['num_procs_hzcollector'] = {}
+pre['num_procs_hzcollector']['Description'] = 'Number of processes hzcollector'
+pre['num_procs_hzcollector']['Command'] = """ps -ef | grep hzcollector | grep -v grep | grep -v .vscode | wc -l"""
+
+pre['num_procs_hzs3uploader'] = {}
+pre['num_procs_hzs3uploader']['Description'] = 'Number of processes hzs3uploader'
+pre['num_procs_hzs3uploader']['Command'] = """ps -ef | grep hzs3uploader | grep -v grep | grep -v .vscode | wc -l"""
+
+
 pre['num_procs_hzcollector'] = {}
 pre['num_procs_hzcollector']['Description'] = 'Number of processes'
-pre['num_procs_hzcollector']['Command'] = """ps -efww | grep hzcollector | grep -v grep | grep -v .vscode | wc -l"""
+pre['num_procs_hzcollector']['Command'] = """ps -ef | grep hzcollector | grep -v grep | grep -v .vscode | wc -l"""
 
 pre['fileage_hzcollector_log'] = {}
 pre['fileage_hzcollector_log']['Description'] = 'Minutes since last log file update'
 pre['fileage_hzcollector_log']['Command'] = """hz_filename=/opt/hopzero/log/hzcollector.log;echo $((($(date +%s) - $(date +%s -r ${hz_filename})) / 60))"""
 
 pre['fileage_hzs3uploader_log'] = {}
-pre['fileage_hzfileage_hzs3uploader_logcollector_log']['Description'] = 'Minutes since last log file update'
+pre['fileage_hzs3uploader_log']['Description'] = 'Minutes since last log file update'
 pre['fileage_hzs3uploader_log']['Command'] = """hz_filename=/opt/hopzero/log/hzs3uploader.log;echo $((($(date +%s) - $(date +%s -r ${hz_filename})) / 60))"""
 
 
@@ -56,7 +71,6 @@ pre['bytes_recv'] = {}
 pre['bytes_recv']['Description'] = 'Bytes received on the primary network interface'
 pre['bytes_recv']['Command'] = "grep 1 /sys/class/net/*/carrier 2> /dev/null |grep -v '/lo/' |xargs -I % sh -c 'cat $(dirname %)/statistics/tx_bytes' | tail -1"
 pre['bytes_recv']['UOM'] = "c"
-
 
 #pre[''] = {}
 #pre['']['Description'] = ''
