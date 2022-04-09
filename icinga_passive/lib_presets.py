@@ -43,6 +43,11 @@ pre['num_procs_hzcollector'] = {}
 pre['num_procs_hzcollector']['Description'] = 'Number of processes'
 pre['num_procs_hzcollector']['Command'] = """ps -efww | grep hzcollector | grep -v grep | grep -v .vscode | wc -l"""
 
+pre['fileage_hzcollector_log'] = {}
+pre['fileage_hzcollector_log']['Description'] = 'Minutes since last log file update'
+pre['fileage_hzcollector_log']['Command'] = """echo $((($(date +%s) - $(date +%s -r "/opt/hopzero/log/hzcollector.log")) / 60))"""
+
+
 pre['lm_cpu_temp'] = {}
 pre['lm_cpu_temp']['Description'] = 'CPU temperature in Celsius from lm-sensors'
 pre['lm_cpu_temp']['Command'] = "sensors -u | grep -A1 'Package id 0:' |tail -1 | awk '{print $NF}'"
