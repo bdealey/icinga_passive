@@ -4,7 +4,7 @@
 HZCONFIG=/opt/hopzero/config/hopzero.ini
 
 ICIGNA_CHECK_BIN=/opt/hopzero/icinga/bin
-ICIGNA_PASSIVE_CHECK=${ICIGNA_CHECK_BIN}/icinga_passive.py
+ICIGNA_PASSIVE_CHECK=${ICIGNA_CHECK_BIN}/icinga_passive_service.py
 #VERBOSE=""
 VERBOSE="-v"
 

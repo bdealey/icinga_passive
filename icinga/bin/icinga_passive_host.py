@@ -269,11 +269,18 @@ def create_host( endpoint, auth ):
     data['attrs'] = attrs
 
     print(attrs)
-    #api_req('PUT', endpoint, api_path, auth, data, verbose)
+    api_req('PUT', endpoint, api_path, auth, data, verbose)
 
-def delete_host():
+def delete_host( endpoint, auth ):
     print('Deleting host ....')
-    print(" ... NOT YET IMPLEMENTED")
+    api_path = 'v1/objects/hosts'
+
+    icigna_identifer = generate_icigna_identifier()
+    data = {}
+    data['filter'] = f'match("{icigna_identifer}", host.name)'
+    data['cascade'] = True
+
+    api_req('DELETE', endpoint, api_path, auth, data, verbose)
 
 
 def main():
@@ -304,7 +311,7 @@ def main():
     if args.mode == "create":
         create_host(endpoint, auth)
     elif args.mode == "delete":
-        delete_host()
+        delete_host(endpoint, auth)
     else:
         print("ERROR: Mode not recoginized:", args.mode)
         sys.exit(1)
