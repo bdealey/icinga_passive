@@ -1,6 +1,8 @@
 #!/bin/bash
 
 ### Icinga Passive checks for a Hopzero Agent
+HZCONFIG=/opt/hopzero/config/hopzero.ini
+
 ICIGNA_CHECK_BIN=/opt/hopzero/icinga/bin
 ICIGNA_PASSIVE_CHECK=${ICIGNA_CHECK_BIN}/icinga_passive.py
 #VERBOSE=""
@@ -33,7 +35,6 @@ function run_checks() {
 
 
 function compose_icigna_identifier() {
-    HZCONFIG=/opt/hopzero/config/hopzero.ini
     HZCUSTID=$(grep customer_id ${HZCONFIG} | awk '{print$2}')
     HZSERIAL=$(grep serial_number ${HZCONFIG} | awk '{print$2}')
     HZ_ICINGA_IDENTIFIER=${ICIGNA_IDENTIFIER_PREFIX}_${HZCUSTID}_${HZSERIAL}
